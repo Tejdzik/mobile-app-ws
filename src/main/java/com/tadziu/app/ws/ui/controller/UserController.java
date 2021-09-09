@@ -8,6 +8,8 @@ import com.tadziu.app.ws.ui.model.response.ErrorMessages;
 import com.tadziu.app.ws.ui.model.response.OperationStatusModel;
 import com.tadziu.app.ws.ui.model.response.RequestOperationStatus;
 import com.tadziu.app.ws.ui.model.response.UserRest;
+import org.apache.catalina.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -42,12 +44,16 @@ public class UserController {
 //        if (userDetails.getFirstName().isEmpty()) throw new NullPointerException("The object is null");
         if (userDetails.getFirstName().isEmpty())
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+//
+//        UserDTO userDTO = new UserDTO();
+//        BeanUtils.copyProperties(userDetails, userDTO);
 
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(userDetails, userDTO);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);
 
         UserDTO createdUser = userService.createUser(userDTO);
-        BeanUtils.copyProperties(createdUser, returnValue);
+//        BeanUtils.copyProperties(createdUser, returnValue);
+        returnValue = modelMapper.map(createdUser, UserRest.class);
 
         return returnValue;
     }

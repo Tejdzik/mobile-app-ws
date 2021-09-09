@@ -4,9 +4,11 @@ import com.tadziu.app.ws.exceptions.UserServiceException;
 import com.tadziu.app.ws.io.entity.UserEntity;
 import com.tadziu.app.ws.io.repositories.UserRepository;
 import com.tadziu.app.ws.service.UserService;
+import com.tadziu.app.ws.shared.dto.AddressDTO;
 import com.tadziu.app.ws.shared.dto.UserDTO;
 import com.tadziu.app.ws.shared.utils.Utils;
 import com.tadziu.app.ws.ui.model.response.ErrorMessages;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,9 +42,18 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
 
+        List<AddressDTO> addresses = user.getAddresses();
+        for (int i = 0; i < addresses.size(); i++) {
+            AddressDTO address = addresses.get(i);
+            address.setUserDetails(user);
+            address.setAddressId(utils.generateAddressId(30));
+            addresses.set(i, address);
+            
+        }
 
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+//        BeanUtils.copyProperties(user, userEntity);
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 
         String publicUserId = utils.generateUserId(30);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -50,8 +61,9 @@ public class UserServiceImpl implements UserService {
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
-        UserDTO returnValue = new UserDTO();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
+//        BeanUtils.copyProperties(storedUserDetails, returnValue);
+        UserDTO returnValue = modelMapper.map(storedUserDetails, UserDTO.class);
+
         return returnValue;
     }
 

@@ -1,6 +1,9 @@
 package com.tadziu.app.ws.shared.dto;
 
+import com.tadziu.app.ws.ui.model.request.AddressRequestModel;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDTO implements Serializable {
 
@@ -15,6 +18,15 @@ public class UserDTO implements Serializable {
     private String encryptedPassword;
     private String emailVerificationToken;
     private Boolean emailVerificationStatus = false;
+    private List<AddressDTO> addresses;
+
+    public List<AddressDTO> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressDTO> addresses) {
+        this.addresses = addresses;
+    }
 
     public long getId() {
         return id;
