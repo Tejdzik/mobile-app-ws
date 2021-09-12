@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -26,7 +27,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users") // http://localhost:8080/users
 public class UserController {
-
 
     @Autowired
     UserService userService;
@@ -117,7 +117,7 @@ public class UserController {
     // httpp://localhost:8080/mobile-app-ws/users/id/addresses/
     @GetMapping(path = "/{id}/addresses",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public List<AddressesRest> getUserAddresses(@PathVariable String id) {
+    public CollectionModel<AddressesRest> getUserAddresses(@PathVariable String id) {
         List<AddressesRest> returnValue = new ArrayList<>();
 
         List<AddressDTO> addressesDTO = addressesService.getAddresses(id);
@@ -126,8 +126,25 @@ public class UserController {
         {
             Type listType = new TypeToken<List<AddressesRest>>() {}.getType();
             returnValue = new ModelMapper().map(addressesDTO, listType);
+
+            for (AddressesRest addressRest : returnValue) {
+                Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
+                        .getUserAddress(id, addressRest.getAddressId()))
+                        .withSelfRel();
+                addressRest.add(selfLink);
+            }
         }
-        return returnValue;
+
+        // http://localhost:8080/users/<userId>
+        Link userLink = WebMvcLinkBuilder.linkTo(UserController.class)
+                .slash(id)
+                .withRel("user");
+        // http://localhost:8080/users/<userId>/addresses/{addressId}
+        Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class)
+                .getUserAddresses(id))
+                .withSelfRel();
+
+        return CollectionModel.of(returnValue, userLink, selfLink);
     }
 
 
