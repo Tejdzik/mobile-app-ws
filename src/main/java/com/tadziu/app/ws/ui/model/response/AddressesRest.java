@@ -1,8 +1,9 @@
 package com.tadziu.app.ws.ui.model.response;
 
 import com.tadziu.app.ws.shared.dto.UserDTO;
+import org.springframework.hateoas.RepresentationModel;
 
-public class AddressesRest {
+public class AddressesRest extends RepresentationModel<AddressesRest> {
 
     private String addressId;
     private String city;
