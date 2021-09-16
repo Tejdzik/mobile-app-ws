@@ -1,9 +1,12 @@
 package com.tadziu.app.ws.service.impl;
 
 import com.tadziu.app.ws.exceptions.UserServiceException;
+import com.tadziu.app.ws.io.entity.PasswordResetTokenEntity;
 import com.tadziu.app.ws.io.entity.UserEntity;
+import com.tadziu.app.ws.io.repositories.PasswordResetTokenRepository;
 import com.tadziu.app.ws.io.repositories.UserRepository;
 import com.tadziu.app.ws.service.UserService;
+import com.tadziu.app.ws.shared.AmazonSES;
 import com.tadziu.app.ws.shared.dto.AddressDTO;
 import com.tadziu.app.ws.shared.dto.UserDTO;
 import com.tadziu.app.ws.shared.utils.Utils;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    PasswordResetTokenRepository passwordResetTokenRepository;
 
 
     @Override
@@ -65,6 +72,8 @@ public class UserServiceImpl implements UserService {
 
 //        BeanUtils.copyProperties(storedUserDetails, returnValue);
         UserDTO returnValue = modelMapper.map(storedUserDetails, UserDTO.class);
+
+        new AmazonSES().verifyEmail(returnValue);
 
         return returnValue;
     }
@@ -167,6 +176,31 @@ public class UserServiceImpl implements UserService {
                 returnValue = true;
             }
         }
+
+        return returnValue;
+    }
+
+    @Override
+    public boolean requestPasswordReset(String email) {
+        boolean returnValue = false;
+
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        if (userEntity == null) {
+            return returnValue;
+        }
+
+        String token = new Utils().generatePasswordResetToken(userEntity.getUserId());
+
+        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+        passwordResetTokenEntity.setToken(token);
+        passwordResetTokenEntity.setUserDetails(userEntity);
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
+
+        returnValue = new AmazonSES().sendPasswordResetRequest(
+                userEntity.getFirstName(),
+                userEntity.getEmail(),
+                token);
 
         return returnValue;
     }
