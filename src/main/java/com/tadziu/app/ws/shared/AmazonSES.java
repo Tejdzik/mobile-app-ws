@@ -1,5 +1,7 @@
 package com.tadziu.app.ws.shared;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.tadziu.app.ws.shared.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -59,9 +61,14 @@ public class AmazonSES {
 
     public void verifyEmail(UserDTO userDto) {
 
-
-        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.EU_WEST_3)
+        AWSCredentialsProvider provider = new ClasspathPropertiesFileCredentialsProvider();
+        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                .withCredentials(provider)
+                .withRegion(Regions.EU_WEST_3)
                 .build();
+
+//        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.EU_WEST_3)
+//                .build();
 
         String htmlBodyWithToken = HTMLBODY.replace("$tokenValue", userDto.getEmailVerificationToken());
         String textBodyWithToken = TEXTBODY.replace("$tokenValue", userDto.getEmailVerificationToken());
@@ -84,10 +91,15 @@ public class AmazonSES {
     {
         boolean returnValue = false;
 
+        AWSCredentialsProvider provider = new ClasspathPropertiesFileCredentialsProvider();
+        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
+                .withCredentials(provider)
+                .withRegion(Regions.EU_WEST_3)
+                .build();
 
-        AmazonSimpleEmailService client =
-                AmazonSimpleEmailServiceClientBuilder.standard()
-                        .withRegion(Regions.EU_WEST_3).build();
+//        AmazonSimpleEmailService client =
+//                AmazonSimpleEmailServiceClientBuilder.standard()
+//                        .withRegion(Regions.EU_WEST_3).build();
 
         String htmlBodyWithToken = PASSWORD_RESET_HTMLBODY.replace("$tokenValue", token);
         htmlBodyWithToken = htmlBodyWithToken.replace("$firstName", firstName);

@@ -37,6 +37,30 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //                .anyRequest().authenticated().and().addFilter(new AuthenticationFilter(authenticationManager()));
+
+
+//        http
+//                .cors().and()
+//                .csrf().disable().authorizeRequests()
+//                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
+//                .permitAll()
+//                .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
+//                .permitAll()
+//                .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_REQUEST_URL)
+//                .permitAll()
+//                .antMatchers(HttpMethod.POST, SecurityConstants.PASSWORD_RESET_URL)
+//                .permitAll()
+//                .antMatchers(SecurityConstants.H2_CONSOLE)
+//                .permitAll()
+//                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+//                .permitAll()
+//                .anyRequest().authenticated().and()
+//                .addFilter(getAuthenticationFilter())
+//                .addFilter(new AuthorizationFilter(authenticationManager()))
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//        http.headers().frameOptions().disable();
     }
 
     @Override
