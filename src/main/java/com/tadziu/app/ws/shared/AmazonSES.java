@@ -59,8 +59,6 @@ public class AmazonSES {
 
     public void verifyEmail(UserDTO userDto) {
 
-        System.setProperty("aws.accessKeyId", "AKIAZN4DJL7OWAZSY6WD");
-        System.setProperty("aws.secretKey", "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");
 
         AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.EU_WEST_3)
                 .build();
@@ -86,8 +84,6 @@ public class AmazonSES {
     {
         boolean returnValue = false;
 
-        System.setProperty("aws.accessKeyId", "AKIAZN4DJL7OWAZSY6WD");
-        System.setProperty("aws.secretKey", "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");
 
         AmazonSimpleEmailService client =
                 AmazonSimpleEmailServiceClientBuilder.standard()

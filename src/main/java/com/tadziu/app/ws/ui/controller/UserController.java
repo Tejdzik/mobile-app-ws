@@ -5,6 +5,7 @@ import com.tadziu.app.ws.service.AddressService;
 import com.tadziu.app.ws.service.UserService;
 import com.tadziu.app.ws.shared.dto.AddressDTO;
 import com.tadziu.app.ws.shared.dto.UserDTO;
+import com.tadziu.app.ws.ui.model.request.PasswordResetModel;
 import com.tadziu.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.tadziu.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.tadziu.app.ws.ui.model.response.*;
@@ -222,25 +223,25 @@ public class UserController {
     }
 
 
-//
-//    @PostMapping(path = "/password-reset",
-//            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-//    )
-//    public OperationStatusModel resetPassword(@RequestBody PasswordResetModel passwordResetModel) {
-//        OperationStatusModel returnValue = new OperationStatusModel();
-//
-//        boolean operationResult = userService.resetPassword(
-//                passwordResetModel.getToken(),
-//                passwordResetModel.getPassword());
-//
-//        returnValue.setOperationName(RequestOperationName.PASSWORD_RESET.name());
-//        returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
-//
-//        if(operationResult)
-//        {
-//            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
-//        }
-//
-//        return returnValue;
-//    }
+
+    @PostMapping(path = "/password-reset",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public OperationStatusModel resetPassword(@RequestBody PasswordResetModel passwordResetModel) {
+        OperationStatusModel returnValue = new OperationStatusModel();
+
+        boolean operationResult = userService.resetPassword(
+                passwordResetModel.getToken(),
+                passwordResetModel.getPassword());
+
+        returnValue.setOperationName(RequestOperationName.PASSWORD_RESET.name());
+        returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
+
+        if(operationResult)
+        {
+            returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+
+        return returnValue;
+    }
 }
