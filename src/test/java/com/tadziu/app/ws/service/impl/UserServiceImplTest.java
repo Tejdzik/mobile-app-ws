@@ -1,11 +1,10 @@
-package service.impl;
+package com.tadziu.app.ws.service.impl;
 
 import com.tadziu.app.ws.exceptions.UserServiceException;
 import com.tadziu.app.ws.io.entity.AddressEntity;
 import com.tadziu.app.ws.io.entity.UserEntity;
 import com.tadziu.app.ws.io.repositories.PasswordResetTokenRepository;
 import com.tadziu.app.ws.io.repositories.UserRepository;
-import com.tadziu.app.ws.service.impl.UserServiceImpl;
 import com.tadziu.app.ws.shared.AmazonSES;
 import com.tadziu.app.ws.shared.dto.AddressDTO;
 import com.tadziu.app.ws.shared.dto.UserDTO;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-public class UserServiceImplTest {
+class UserServiceImplTest {
 
 
     @Mock
